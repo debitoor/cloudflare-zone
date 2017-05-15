@@ -2,7 +2,7 @@
 Syncronizes a [zone bind file](https://en.wikipedia.org/wiki/Zone_file) with [Cloudflare](https://cloudflare.com/).
 
 [![Build Status](https://travis-ci.org/debitoor/cloudflare-zone.svg?branch=master)](https://travis-ci.org/debitoor/cloudflare-zone)
-[![NPM Version](https://img.shields.io/npm/v/cloudflare-zone.svg)](https://www.npmjs.com/package/css-bingo)
+[![NPM Version](https://img.shields.io/npm/v/cloudflare-zone.svg)](https://www.npmjs.com/package/cloudflare-zone)
 
 ## Install
 ``` bash
