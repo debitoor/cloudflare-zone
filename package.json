@@ -1,0 +1,48 @@
+{
+  "name": "cloudflare-zone",
+  "version": "0.0.0",
+  "description": "Cloudflare Zone Updater",
+  "scripts": {
+    "build": "babel src --out-dir .",
+    "postversion": "git push && git push --tags",
+    "preversion": "npm test",
+    "test": "mocha"
+  },
+  "bin": {
+    "cloudflare-zone": "bin/cloudflare-zone.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debitoor/cloudflare-zone.git"
+  },
+  "keywords": [
+    "cloudflare",
+    "zone",
+    "upload",
+    "bind",
+    "sync"
+  ],
+  "main": "lib/",
+  "author": "Jonatan Pedersen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/debitoor/cloudflare-zone/issues"
+  },
+  "homepage": "https://github.com/debitoor/cloudflare-zone#readme",
+  "devDependencies": {
+    "babel-cli": "6.24.1",
+    "babel-eslint": "^7.2.3",
+    "babel-plugin-syntax-async-functions": "6.13.0",
+    "babel-plugin-transform-async-to-generator": "6.24.1",
+    "babel-plugin-transform-object-rest-spread": "6.23.0",
+    "babel-preset-node6": "11.0.0",
+    "mocha": "3.4.1",
+    "mocha-eslint": "3.0.1"
+  },
+  "dependencies": {
+    "command-line-args": "4.0.4",
+    "dns-zonefile": "0.2.2",
+    "node-fetch": "1.6.3",
+    "qs": "6.4.0"
+  }
+}
