@@ -12,7 +12,7 @@ const options = commandLineArgs(optionDefinitions);
 
 main(options)
 	.catch(err => {
-		console.error(err);
+		console.error(err, err.stack);
 		process.exit(1);
 	}).then(() => {
 		process.exit(0);
