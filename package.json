@@ -5,7 +5,7 @@
   "scripts": {
     "build": "babel src --out-dir .",
     "postversion": "git push && git push --tags",
-    "preversion": "npm build && npm test",
+    "preversion": "npm run build && npm test",
     "test": "mocha"
   },
   "bin": {
