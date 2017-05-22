@@ -22,7 +22,7 @@
     "bind",
     "sync"
   ],
-  "main": "lib/",
+  "main": "lib/cloudflare-zone.js",
   "author": "Jonatan Pedersen",
   "license": "MIT",
   "bugs": {
