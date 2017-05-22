@@ -35,7 +35,10 @@ async function callCloudflareApi ({method, path, query, body, auth}) {
 
 	function handlePaging (body) {
 		if (body.errors.length > 0) {
-			throw body.errors;
+			let error = new Error('Cloudflare API Error');
+			error.body = body;
+
+			throw error;
 		}
 
 		let result = body.result;
