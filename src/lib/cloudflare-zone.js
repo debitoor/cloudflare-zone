@@ -63,6 +63,16 @@ async function getCloudflareZone (name, auth) {
 	}).then(result => result[0]);
 }
 
+async function createCloudflareZone (name, auth) {
+	console.log('createCloudflareZone', name);
+	return callCloudflareApi({
+		method: 'POST',
+		path: '/client/v4/zones',
+		body: {name, jump_start: false},
+		auth: auth
+	});
+}
+
 async function getCloudflareZoneDnsRecords (cloudflareZoneId, auth) {
 	console.log('getCloudflareZoneDnsRecords', cloudflareZoneId);
 	return callCloudflareApi({method: 'GET', path: `/client/v4/zones/${cloudflareZoneId}/dns_records`, auth: auth});
@@ -164,7 +174,7 @@ function compareDnsRecords(a, b) {
 	}
 }
 
-export async function main ({file, authEmail, authKey}) {
+export async function main ({file, authEmail, authKey, autoCreate}) {
 	try {
 		const auth = {
 			email: authEmail,
@@ -175,6 +185,15 @@ export async function main ({file, authEmail, authKey}) {
 		let localZoneDnsRecords = getLocalZoneDnsRecords(localZone);
 		let localZoneName = getLocalZoneName(localZone);
 		let cloudflareZone = await getCloudflareZone(localZoneName, auth);
+
+		if (!cloudflareZone) {
+			if (autoCreate) {
+				cloudflareZone = await createCloudflareZone(localZoneName, auth);
+			} else {
+				throw new Error('Zone not found. Create it manually or specify --autoCreate');
+			}
+		}
+
 		let cloudflareZoneId = cloudflareZone.id;
 		let cloudflareZoneDnsRecords = await getCloudflareZoneDnsRecords(cloudflareZoneId, auth);
 

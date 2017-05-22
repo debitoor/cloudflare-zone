@@ -5,7 +5,8 @@ import { main } from '../lib/cloudflare-zone';
 const optionDefinitions = [
 	{ name: 'file', type: String },
 	{ name: 'authEmail', type: String, defaultValue: process.env.CLOUDFLARE_AUTH_EMAIL },
-	{ name: 'authKey', type: String, defaultValue: process.env.CLOUDFLARE_AUTH_KEY }
+	{ name: 'authKey', type: String, defaultValue: process.env.CLOUDFLARE_AUTH_KEY },
+	{ name: 'autoCreate', type: Boolean, defaultValue: false }
 ];
 
 const options = commandLineArgs(optionDefinitions);
