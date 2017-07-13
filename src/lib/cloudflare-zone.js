@@ -37,6 +37,9 @@ async function callCloudflareApi ({method, path, query, body, auth}) {
 		if (body.errors.length > 0) {
 			let error = new Error('Cloudflare API Error');
 			error.body = body;
+			error.bodyJSON = JSON.stringify(body, null, 4);
+			error.args = {method, path, query, body};
+			error.argsJSON = JSON.stringify({method, path, query, body}, null, 4);
 
 			throw error;
 		}
