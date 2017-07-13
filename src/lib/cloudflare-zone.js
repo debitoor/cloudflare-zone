@@ -164,12 +164,20 @@ function getLocalZoneDnsRecords (zone) {
 		dnsRecords.push({
 			type: 'TXT',
 			name: fixName(txt.name, zoneName),
-			content: txt.txt,
+			content: trimQuotes(txt.txt),
 			ttl: txt.ttl
 		});
 	});
 
 	return dnsRecords;
+}
+
+function trimQuotes (str) {
+	if (!str) {
+		return;
+	}
+
+	return (str.startsWith('"') && str.endsWith('"')) ? str.slice(1, -1) : str;
 }
 
 function compareDnsRecords(a, b) {
