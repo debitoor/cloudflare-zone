@@ -5,7 +5,7 @@ import dnsZonefile from 'dns-zonefile';
 
 async function callCloudflareApi ({method, path, query, body, auth}) {
 	method = method || 'GET';
-
+	const reqBody = body;
 	if (method === 'GET') {
 		query = query || {};
 		query.per_page = 100;
@@ -38,8 +38,8 @@ async function callCloudflareApi ({method, path, query, body, auth}) {
 			let error = new Error('Cloudflare API Error');
 			error.body = body;
 			error.bodyJSON = JSON.stringify(body, null, 4);
-			error.args = {method, path, query, body};
-			error.argsJSON = JSON.stringify({method, path, query, body}, null, 4);
+			error.args = {method, path, query, reqBody};
+			error.argsJSON = JSON.stringify({method, path, query, reqBody}, null, 4);
 
 			throw error;
 		}
