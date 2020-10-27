@@ -43,7 +43,7 @@
   "dependencies": {
     "command-line-args": "4.0.4",
     "dns-zonefile": "0.2.2",
-    "node-fetch": "1.6.3",
+    "node-fetch": "2.6.1",
     "qs": "6.4.0"
   }
 }
