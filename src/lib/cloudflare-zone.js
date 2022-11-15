@@ -3,7 +3,7 @@ import nodeFetch from 'node-fetch';
 import qs from 'qs';
 import dnsZonefile from 'dns-zonefile';
 
-async function callCloudflareApi ({method, path, query, body, auth}) {
+async function callCloudflareApi({ method, path, query, body, auth }) {
 	method = method || 'GET';
 	const reqBody = body;
 	if (method === 'GET') {
@@ -26,32 +26,32 @@ async function callCloudflareApi ({method, path, query, body, auth}) {
 		},
 		body: body && typeof body === 'string' ? body : JSON.stringify(body)
 	})
-	.then(parseResponseBody)
-	.then(handlePaging);
+		.then(parseResponseBody)
+		.then(handlePaging);
 
-	function parseResponseBody (response) {
+	function parseResponseBody(response) {
 		return response.json();
 	}
 
-	function handlePaging (body) {
+	function handlePaging(body) {
 		if (body.errors.length > 0) {
 			let error = new Error('Cloudflare API Error');
 			error.body = body;
 			error.bodyJSON = JSON.stringify(body, null, 4);
-			error.args = {method, path, query, reqBody};
-			error.argsJSON = JSON.stringify({method, path, query, reqBody}, null, 4);
+			error.args = { method, path, query, reqBody };
+			error.argsJSON = JSON.stringify({ method, path, query, reqBody }, null, 4);
 
 			throw error;
 		}
 
 		let result = body.result;
-		let {page, total_pages} = body.result_info || {};
+		let { page, total_pages } = body.result_info || {};
 
 		if (page < total_pages) {
 			let nextPage = page + 1;
-			let nextQuery = Object.assign({}, query, {page: nextPage});
+			let nextQuery = Object.assign({}, query, { page: nextPage });
 
-			return callCloudflareApi({method, path, query: nextQuery, body, auth})
+			return callCloudflareApi({ method, path, query: nextQuery, body, auth })
 				.then(nextResult => [...result, ...nextResult]);
 		} else {
 			return result;
@@ -59,44 +59,44 @@ async function callCloudflareApi ({method, path, query, body, auth}) {
 	}
 }
 
-async function getCloudflareZone (name, auth) {
+async function getCloudflareZone(name, auth) {
 	console.log('getCloudflareZone', name);
 	return callCloudflareApi({
 		method: 'GET',
 		path: '/client/v4/zones',
-		query: {name},
+		query: { name },
 		auth: auth
 	}).then(result => result[0]);
 }
 
-async function createCloudflareZone (name, auth) {
+async function createCloudflareZone(name, auth) {
 	console.log('createCloudflareZone', name);
 	return callCloudflareApi({
 		method: 'POST',
 		path: '/client/v4/zones',
-		body: {name, jump_start: false},
+		body: { name, jump_start: false },
 		auth: auth
 	});
 }
 
-async function getCloudflareZoneDnsRecords (cloudflareZoneId, auth) {
+async function getCloudflareZoneDnsRecords(cloudflareZoneId, auth) {
 	console.log('getCloudflareZoneDnsRecords', cloudflareZoneId);
-	return callCloudflareApi({method: 'GET', path: `/client/v4/zones/${cloudflareZoneId}/dns_records`, auth: auth});
+	return callCloudflareApi({ method: 'GET', path: `/client/v4/zones/${cloudflareZoneId}/dns_records`, auth: auth });
 }
 
-async function createCloudflareZoneDnsRecord (cloudflareZoneId, parameters, auth) {
+async function createCloudflareZoneDnsRecord(cloudflareZoneId, parameters, auth) {
 	console.log('createCloudflareZoneDnsRecord', cloudflareZoneId, parameters);
-	return callCloudflareApi({method: 'POST', path: `/client/v4/zones/${cloudflareZoneId}/dns_records`, body: parameters, auth: auth});
+	return callCloudflareApi({ method: 'POST', path: `/client/v4/zones/${cloudflareZoneId}/dns_records`, body: parameters, auth: auth });
 }
 
-async function updateCloudflareZoneDnsRecord (cloudflareZoneId, dnsRecordId, parameters, auth) {
+async function updateCloudflareZoneDnsRecord(cloudflareZoneId, dnsRecordId, parameters, auth) {
 	console.log('updateCloudflareZoneDnsRecord', cloudflareZoneId, dnsRecordId, parameters);
-	return callCloudflareApi({method: 'PUT', path: `/client/v4/zones/${cloudflareZoneId}/dns_records/${dnsRecordId}`, body: parameters, auth: auth});
+	return callCloudflareApi({ method: 'PUT', path: `/client/v4/zones/${cloudflareZoneId}/dns_records/${dnsRecordId}`, body: parameters, auth: auth });
 }
 
-async function deleteCloudflareZoneDnsRecord (cloudflareZoneId, dnsRecordId, auth) {
+async function deleteCloudflareZoneDnsRecord(cloudflareZoneId, dnsRecordId, auth) {
 	console.log('deleteCloudflareZoneDnsRecord', cloudflareZoneId, dnsRecordId);
-	return callCloudflareApi({method: 'DELETE', path: `/client/v4/zones/${cloudflareZoneId}/dns_records/${dnsRecordId}`, auth: auth});
+	return callCloudflareApi({ method: 'DELETE', path: `/client/v4/zones/${cloudflareZoneId}/dns_records/${dnsRecordId}`, auth: auth });
 }
 
 // Alias records are not supported by dns-zonefile
@@ -109,26 +109,26 @@ function stripAliasRecords(string) {
 		.join('\n');
 }
 
-function removeTrailingDot (str) {
+function removeTrailingDot(str) {
 	return str.replace(/\.$/, '');
 }
 
-function fixName (name, zoneName) {
+function fixName(name, zoneName) {
 	return (name + '.' + zoneName).replace(/^@./, '').toLowerCase();
 }
 
-function getLocalZone (zoneFile) {
+function getLocalZone(zoneFile) {
 	let zoneFileContents = stripAliasRecords(fs.readFileSync(zoneFile, 'utf8'));
 	let zone = dnsZonefile.parse(zoneFileContents);
 
 	return zone;
 }
 
-function getLocalZoneName (zone) {
+function getLocalZoneName(zone) {
 	return removeTrailingDot(zone.$origin);
 }
 
-function getLocalZoneDnsRecords (zone) {
+function getLocalZoneDnsRecords(zone) {
 	let dnsRecords = [];
 	let zoneName = removeTrailingDot(zone.$origin);
 
@@ -169,10 +169,16 @@ function getLocalZoneDnsRecords (zone) {
 		});
 	});
 
+	zone.a && zone.a.forEach(a => dnsRecords.push({
+		type: 'A',
+		name: fixName(a.name, zoneName),
+		ttl: a.ttl
+	}))
+
 	return dnsRecords;
 }
 
-function trimQuotes (str) {
+function trimQuotes(str) {
 	if (!str) {
 		return;
 	}
@@ -188,7 +194,7 @@ function compareDnsRecords(a, b) {
 	}
 }
 
-export async function main ({file, authEmail, authKey, autoCreate}) {
+export async function main({ file, authEmail, authKey, autoCreate }) {
 	try {
 		const auth = {
 			email: authEmail,
@@ -264,7 +270,7 @@ export async function main ({file, authEmail, authKey, autoCreate}) {
 		].map(action => action());
 
 		await Promise.all(tasks);
-	} catch (err){
+	} catch (err) {
 		throw err;
 	}
 }
