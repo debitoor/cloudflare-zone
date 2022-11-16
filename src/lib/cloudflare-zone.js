@@ -172,7 +172,8 @@ function getLocalZoneDnsRecords(zone) {
 	zone.a && zone.a.forEach(a => dnsRecords.push({
 		type: 'A',
 		name: fixName(a.name, zoneName),
-		ttl: a.ttl
+		ttl: a.ttl,
+		content: removeTrailingDot(a.TODO).toLowerCase()
 	}))
 
 	return dnsRecords;
